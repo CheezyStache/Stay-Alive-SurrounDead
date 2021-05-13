@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private GameObject _player;
-    [SerializeField] private GameObject _enemy;
+    [SerializeField] private GameObject[] _enemies;
     [SerializeField] private float _spawnDelay;
     [SerializeField] private float _distance;
     [SerializeField] private float _yOffset;
@@ -30,7 +30,8 @@ public class EnemySpawner : MonoBehaviour
             var viewDirection = (_player.transform.position - position).normalized;
             var rotation = Quaternion.LookRotation(viewDirection);
 
-            var newEnemy = Instantiate(_enemy, position, rotation, gameObject.transform);
+            var enemy = _enemies[Random.Range(0, _enemies.Length)];
+            var newEnemy = Instantiate(enemy, position, rotation, gameObject.transform);
 
             var enemyScript = newEnemy.GetComponent<EnemyScript>();
             if (enemyScript == null)
