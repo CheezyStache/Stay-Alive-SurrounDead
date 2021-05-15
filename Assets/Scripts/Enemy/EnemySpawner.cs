@@ -7,9 +7,9 @@ public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private GameObject _player;
     [SerializeField] private GameObject[] _enemies;
+    [SerializeField] private Transform[] _spawnPoints;
+
     [SerializeField] private float _spawnDelay;
-    [SerializeField] private float _distance;
-    [SerializeField] private float _yOffset;
 
     void Start()
     {
@@ -24,9 +24,7 @@ public class EnemySpawner : MonoBehaviour
             yield return new WaitForSeconds(_spawnDelay);
 
             // Enemy initial position and rotation
-            var randomDirection = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)).normalized;
-            var position = randomDirection * _distance;
-            position.y = _yOffset;
+            var position = _spawnPoints[Random.Range(0, _spawnPoints.Length)].position;
             var viewDirection = (_player.transform.position - position).normalized;
             var rotation = Quaternion.LookRotation(viewDirection);
 
