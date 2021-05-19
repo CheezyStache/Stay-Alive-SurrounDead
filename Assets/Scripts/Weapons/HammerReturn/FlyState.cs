@@ -12,22 +12,20 @@ namespace HammerState
         private GameObject _gameObject;
 
         private Vector3 _flyToPosition;
-        private Vector3 _flyToEulerRotation;
         private Quaternion _flyToRotation;
 
         private float _flySpeed;
 
-        private const float DISTANCE_ACCURACY = 0.01f;
+        private const float DISTANCE_ACCURACY = 0.05f;
         private const float ROTATION_ACCURACY = 5f;
         private const float HAMMER_ROTATION_OFFSET = -90f;
 
-        public FlyState(GameObject gameObject, float flyHeight, float flySpeed, GameObject hand)
+        public FlyState(GameObject gameObject, float flyHeight, float flyTime, GameObject hand)
         {
             _gameObject = gameObject;
             _flyToPosition = gameObject.transform.position + new Vector3(0f, flyHeight, 0f);
-            _flyToEulerRotation = GetRotationToHand(hand, _flyToPosition);
-            _flyToRotation = Quaternion.Euler(_flyToEulerRotation);
-            _flySpeed = flySpeed;
+            _flyToRotation = GetRotationToHand(hand, _flyToPosition);
+            _flySpeed = Vector3.Distance(gameObject.transform.position, _flyToPosition) / flyTime;
 
             _gameObject.GetComponent<Rigidbody>().isKinematic = true;
         }
@@ -43,8 +41,10 @@ namespace HammerState
             var direction = _flyToPosition - _gameObject.transform.position;
             direction.Normalize();
 
-            if(!smallDistance)
-                _gameObject.transform.Translate(direction * _flySpeed * Time.deltaTime);
+
+            if (!smallDistance)
+                _gameObject.transform.position = Vector3.MoveTowards(_gameObject.transform.position, _flyToPosition,
+                    _flySpeed * Time.deltaTime);
 
             if(!smallRotation)
                 _gameObject.transform.rotation = Quaternion.Lerp(_gameObject.transform.rotation, _flyToRotation, Time.deltaTime);
@@ -64,7 +64,7 @@ namespace HammerState
 
         private bool IsPreciseRotation()
         {
-            var degrees = _gameObject.transform.eulerAngles - _flyToEulerRotation;
+            var degrees = _gameObject.transform.eulerAngles - _flyToRotation.eulerAngles;
             return IsPreciseEulerAngle(degrees.x) && IsPreciseEulerAngle(degrees.y) &&
                    IsPreciseEulerAngle(degrees.z);
         }
@@ -74,11 +74,14 @@ namespace HammerState
             return Mathf.Abs(angle) <= ROTATION_ACCURACY || 360f - Mathf.Abs(angle) <= ROTATION_ACCURACY;
         }
 
-        private Vector3 GetRotationToHand(GameObject hand, Vector3 position)
+        private Quaternion GetRotationToHand(GameObject hand, Vector3 position)
         {
             var direction = hand.transform.position - position;
-            var angle = Vector3.Angle(Vector3.back, direction) + HAMMER_ROTATION_OFFSET;
-            return new Vector3(0f, angle, 0f);
+            var lookRotation = Quaternion.LookRotation(direction, Vector3.up);
+            var rotation = Quaternion.Euler(lookRotation.eulerAngles.x,
+                lookRotation.eulerAngles.y - HAMMER_ROTATION_OFFSET, lookRotation.eulerAngles.z);
+
+            return rotation;
         }
     }
 }

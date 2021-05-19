@@ -10,7 +10,7 @@ public class HammerReturn : MonoBehaviour
 
     [SerializeField] private float _waitSeconds;
     [SerializeField] private float _flyHeight;
-    [SerializeField] private float _flySpeed;
+    [SerializeField] private float _flyTime;
     [SerializeField] private float _returnTime;
     [SerializeField] private float _isNearRadius;
 
@@ -73,7 +73,7 @@ public class HammerReturn : MonoBehaviour
 
         yield return new WaitForSeconds(_waitSeconds);
 
-        _state = new FlyState(gameObject, _flyHeight, _flySpeed, _hand);
+        _state = new FlyState(gameObject, _flyHeight, _flyTime, _hand);
         _stateEnum = HammerState.Fly;
         _hasTouchedGround = false;
     }

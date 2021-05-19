@@ -266,8 +266,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _hand: {fileID: 0}
-  _waitSeconds: 3
+  _waitSeconds: 1
   _flyHeight: 2
-  _flySpeed: 1
+  _flyTime: 2
   _returnTime: 3
   _isNearRadius: 1

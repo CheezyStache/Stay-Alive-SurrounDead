@@ -96,18 +96,22 @@ public class EnemyScript : MonoBehaviour
 
     private IEnumerator DieFall()
     {
-        yield return new WaitForSeconds(_dieDelay);
-
         _rigidbody.isKinematic = true;
 
+        var bottomPoint = new Vector3(transform.position.x, _dieFallY, transform.position.z);
+
+        yield return new WaitForSeconds(_dieDelay);
+
         var time = 0f;
-        var fallTime = (transform.position.y - _dieFallY) / _dieFallSpeed;
+        var fallTime = Vector3.Distance(transform.position, bottomPoint) / _dieFallSpeed;
 
         while (time < fallTime)
         {
             time += Time.deltaTime;
 
-            transform.Translate(Vector3.down * _dieFallSpeed * Time.deltaTime);
+            var direction = bottomPoint - transform.position;
+            direction.Normalize();
+            transform.Translate(direction * _dieFallSpeed * Time.deltaTime);
 
             yield return null;
         }
