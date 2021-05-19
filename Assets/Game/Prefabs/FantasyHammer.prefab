@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4259237339389351392}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Grab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 7989446148630820288}
   - component: {fileID: -4407142706220329697}
   - component: {fileID: -3411673777699994415}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FantasyHammer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -267,4 +267,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hand: {fileID: 0}
   _waitSeconds: 3
-  _throwHeight: 2
+  _flyHeight: 2
+  _flySpeed: 1
+  _returnTime: 3
+  _isNearRadius: 1

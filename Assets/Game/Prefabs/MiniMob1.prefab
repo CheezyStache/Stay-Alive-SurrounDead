@@ -79,6 +79,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 3
+  _dieDelay: 3
+  _dieFallSpeed: 1
+  _dieFallY: -2
 --- !u!65 &5142377882224060299
 BoxCollider:
   m_ObjectHideFlags: 0
