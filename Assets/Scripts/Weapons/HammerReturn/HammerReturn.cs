@@ -18,6 +18,8 @@ public class HammerReturn : MonoBehaviour
     private IHammerState _state;
     private HammerState _stateEnum;
 
+    private bool isHolding;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -76,10 +78,23 @@ public class HammerReturn : MonoBehaviour
         _hasTouchedGround = false;
     }
 
+    public void IsHolding()
+    {
+        _state = new HoldingState(gameObject);
+        _stateEnum = HammerState.Holding;
+    }
+
+    public void IsReleased()
+    {
+        _state = new IdleState(gameObject);
+        _stateEnum = HammerState.Idle;
+    }
+
     private enum HammerState
     {
         Idle,
         Fly,
-        Return
+        Return,
+        Holding
     }
 }
