@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class EnemyScript : MonoBehaviour
 {
@@ -14,8 +15,7 @@ public class EnemyScript : MonoBehaviour
     private Rigidbody _rigidbody;
     private Animator _animator;
 
-    private bool isRunning = true;
-    private bool died = false;
+    private EnemyState _state;
 
     private const string RunForwardAnimation = "Run Forward";
     private const string AttackAnimation = "Attack 01";
@@ -23,6 +23,8 @@ public class EnemyScript : MonoBehaviour
 
     void Start()
     {
+        _state = EnemyState.Run;
+
         _rigidbody = GetComponent<Rigidbody>();
         _animator = GetComponent<Animator>();
 
@@ -31,41 +33,45 @@ public class EnemyScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(isRunning)
+        if(_state == EnemyState.Run)
             Run();
     }
 
     void OnTriggerStay(Collider collider)
     {
-        if(died)
+        if (_state == EnemyState.Die)
             return;
 
         if (collider.gameObject.tag != "Player")
             return;
 
-        isRunning = false;
+        _state = EnemyState.Attack;
         ChangeAnimation(AttackAnimation);
     }
 
     void OnTriggerExit(Collider collider)
     {
-        if (died)
+        if (_state != EnemyState.Run)
             return;
 
         if (collider.gameObject.tag != "Player")
             return;
 
-        isRunning = true;
+        _state = EnemyState.Run;
         ChangeAnimation(RunForwardAnimation);
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        if (died)
+        if (_state == EnemyState.Die)
             return;
 
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Hammer"))
-            Die();
+        if (collision.gameObject.layer != LayerMask.NameToLayer("Hammer"))
+            return;
+
+        _state = EnemyState.Die;
+        ChangeAnimation(DieAnimation);
+        StartCoroutine(DieFall());
     }
 
 
@@ -84,14 +90,6 @@ public class EnemyScript : MonoBehaviour
             _animator.SetBool(parameter.name, false);
 
         _animator.SetBool(nextAnimation, true);
-    }
-
-    private void Die()
-    {
-        isRunning = false;
-        died = true;
-        ChangeAnimation(DieAnimation);
-        StartCoroutine(DieFall());
     }
 
     private IEnumerator DieFall()
@@ -117,5 +115,12 @@ public class EnemyScript : MonoBehaviour
         }
 
         Destroy(gameObject);
+    }
+
+    private enum EnemyState
+    {
+        Run,
+        Attack,
+        Die
     }
 }
