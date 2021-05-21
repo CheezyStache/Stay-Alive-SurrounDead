@@ -7,7 +7,7 @@ public class PlayerHitTracker : MonoBehaviour
 {
     [SerializeField] private float attackDelay;
 
-    [SerializeField] private UnityEvent onAttack;
+    [SerializeField] private OnPlayerHitEvent onPlayerHit;
 
     private int enemyAttackCount;
 
@@ -15,7 +15,6 @@ public class PlayerHitTracker : MonoBehaviour
     {
         enemyAttackCount = 0;
 
-        onAttack ??= new UnityEvent();
         StartCoroutine(Hit());
     }
 
@@ -41,8 +40,7 @@ public class PlayerHitTracker : MonoBehaviour
         {
             yield return new WaitForSeconds(attackDelay);
 
-            if (enemyAttackCount != 0)
-                onAttack.Invoke();
+            onPlayerHit.Raise(enemyAttackCount);
         }
     }
 }

@@ -9,6 +9,7 @@ public class EnemyScript : MonoBehaviour
     [SerializeField] private float _dieDelay;
     [SerializeField] private float _dieFallSpeed;
     [SerializeField] private float _dieFallY;
+    [SerializeField] private float _notLookDistance;
 
     [HideInInspector] public Transform PlayerTransform { get; set; }
 
@@ -51,7 +52,7 @@ public class EnemyScript : MonoBehaviour
 
     void OnTriggerExit(Collider collider)
     {
-        if (_state != EnemyState.Run)
+        if (_state != EnemyState.Attack)
             return;
 
         if (collider.gameObject.tag != "Player")

@@ -82,10 +82,7 @@ MonoBehaviour:
   _dieDelay: 3
   _dieFallSpeed: 1
   _dieFallY: -2
-  _attackDelay: 1
-  _onAttack:
-    m_PersistentCalls:
-      m_Calls: []
+  _notLookDistance: 4
 --- !u!65 &5142377882224060299
 BoxCollider:
   m_ObjectHideFlags: 0

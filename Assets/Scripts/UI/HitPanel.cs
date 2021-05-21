@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HitPanel : MonoBehaviour
+public class HitPanel : GameEventListener
 {
     [SerializeField] private Color _color;
     [SerializeField] private Color _hitColor;
