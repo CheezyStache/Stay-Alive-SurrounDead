@@ -8,9 +8,11 @@ public class PlayerData : ScriptableObject
     [SerializeField] private int maxHealth;
 
     public int Health { get; set; }
+    public int Wave { get; set; }
 
     void OnEnable()
     {
         Health = maxHealth;
+        Wave = 0;
     }
 }

@@ -11,6 +11,8 @@ public class EnemyScript : MonoBehaviour
     [SerializeField] private float _dieFallY;
     [SerializeField] private float _notLookDistance;
 
+    [SerializeField] private OnEnemyDiedEvent onEnemyDiedEvent;
+
     [HideInInspector] public Transform PlayerTransform { get; set; }
 
     private Rigidbody _rigidbody;
@@ -75,6 +77,10 @@ public class EnemyScript : MonoBehaviour
         StartCoroutine(DieFall());
     }
 
+    public void IncreaseSpeed(float amount)
+    {
+        _speed += amount;
+    }
 
     private void Run()
     {
@@ -116,6 +122,7 @@ public class EnemyScript : MonoBehaviour
             yield return null;
         }
 
+        onEnemyDiedEvent.Raise();
         Destroy(gameObject);
     }
 

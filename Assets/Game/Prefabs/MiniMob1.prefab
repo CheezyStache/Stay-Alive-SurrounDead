@@ -83,6 +83,7 @@ MonoBehaviour:
   _dieFallSpeed: 1
   _dieFallY: -2
   _notLookDistance: 4
+  onEnemyDiedEvent: {fileID: 11400000, guid: 371f5f001563635408875092b7ebc322, type: 2}
 --- !u!65 &5142377882224060299
 BoxCollider:
   m_ObjectHideFlags: 0

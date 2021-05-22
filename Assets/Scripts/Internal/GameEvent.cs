@@ -7,7 +7,7 @@ public abstract class GameEvent : ScriptableObject
     private IList<GameEventListener> listeners =
         new List<GameEventListener>();
 
-    protected void Raise()
+    public void Raise()
     {
         for (int i = listeners.Count - 1; i >= 0; i--)
             listeners[i].OnEventRaised();
