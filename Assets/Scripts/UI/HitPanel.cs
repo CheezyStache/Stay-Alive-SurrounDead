@@ -24,10 +24,10 @@ public class HitPanel : GameEventListener
 
     private IEnumerator HitTimer()
     {
-        _image.color = Color.Lerp(_color, _hitColor, _flashSpeed * Time.deltaTime);
+        _image.color = _hitColor;
 
         yield return new WaitForSeconds(_flashStay);
 
-        _image.color = Color.Lerp(_hitColor, _color, _flashSpeed * Time.deltaTime);
+        _image.color = _color;
     }
 }

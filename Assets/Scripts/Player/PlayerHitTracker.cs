@@ -10,28 +10,26 @@ public class PlayerHitTracker : MonoBehaviour
     [SerializeField] private OnPlayerHitEvent onPlayerHit;
 
     private int enemyAttackCount;
+    private List<int> enemyNames;
 
     void Start()
     {
         enemyAttackCount = 0;
+        enemyNames = new List<int>();
 
         StartCoroutine(Hit());
     }
 
-    void OnTriggerEnter(Collider collider)
+    void OnTriggerStay(Collider collider)
     {
         if (collider.gameObject.layer != LayerMask.NameToLayer("Enemy"))
+            return;
+
+        if (enemyNames.Contains(collider.gameObject.GetInstanceID()))
             return;
 
         enemyAttackCount++;
-    }
-
-    void OnTriggerExit(Collider collider)
-    {
-        if (collider.gameObject.layer != LayerMask.NameToLayer("Enemy"))
-            return;
-
-        enemyAttackCount--;
+        enemyNames.Add(collider.gameObject.GetInstanceID());
     }
 
     IEnumerator Hit()
@@ -41,6 +39,8 @@ public class PlayerHitTracker : MonoBehaviour
             yield return new WaitForSeconds(attackDelay);
 
             onPlayerHit.Raise(enemyAttackCount);
+            enemyAttackCount = 0;
+            enemyNames.Clear();
         }
     }
 }

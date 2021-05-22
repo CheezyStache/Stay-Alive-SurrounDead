@@ -96,6 +96,7 @@ public class EnemyScript : MonoBehaviour
     private IEnumerator DieFall()
     {
         _rigidbody.isKinematic = true;
+        GetComponent<BoxCollider>().enabled = false;
 
         var bottomPoint = new Vector3(transform.position.x, _dieFallY, transform.position.z);
 
