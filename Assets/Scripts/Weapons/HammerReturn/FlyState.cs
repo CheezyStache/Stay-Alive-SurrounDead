@@ -14,10 +14,12 @@ namespace HammerState
         private Vector3 _flyToPosition;
         private Quaternion _flyToRotation;
 
-        private float _flySpeed;
+        private readonly float _flyTime;
+        private readonly Vector3 _startPosition;
+        private readonly Quaternion _startRotation;
 
-        private const float DISTANCE_ACCURACY = 0.05f;
-        private const float ROTATION_ACCURACY = 5f;
+        private float _leftTime;
+
         private const float HAMMER_ROTATION_OFFSET = -90f;
 
         public FlyState(GameObject gameObject, float flyHeight, float flyTime, GameObject hand)
@@ -25,29 +27,26 @@ namespace HammerState
             _gameObject = gameObject;
             _flyToPosition = gameObject.transform.position + new Vector3(0f, flyHeight, 0f);
             _flyToRotation = GetRotationToHand(hand, _flyToPosition);
-            _flySpeed = Vector3.Distance(gameObject.transform.position, _flyToPosition) / flyTime;
 
             _gameObject.GetComponent<Rigidbody>().isKinematic = true;
+
+            _leftTime = flyTime;
+            _flyTime = flyTime;
+            _startPosition = gameObject.transform.position;
+            _startRotation = gameObject.transform.rotation;
         }
 
         public bool StateUpdate()
         {
-            var smallDistance = IsPreciseDistance();
-            var smallRotation = IsPreciseRotation();
-
-            if (smallDistance && smallRotation)
+            if (_leftTime <= 0f)
                 return false;
 
-            var direction = _flyToPosition - _gameObject.transform.position;
-            direction.Normalize();
+            _leftTime -= Time.deltaTime;
 
+            var interpolation = (_flyTime - _leftTime) / _flyTime;
 
-            if (!smallDistance)
-                _gameObject.transform.position = Vector3.MoveTowards(_gameObject.transform.position, _flyToPosition,
-                    _flySpeed * Time.deltaTime);
-
-            if(!smallRotation)
-                _gameObject.transform.rotation = Quaternion.Lerp(_gameObject.transform.rotation, _flyToRotation, Time.deltaTime);
+            _gameObject.transform.position = Vector3.Lerp(_startPosition, _flyToPosition, interpolation);
+            _gameObject.transform.rotation = Quaternion.Lerp(_startRotation, _flyToRotation, interpolation);
 
             return true;
         }
@@ -55,23 +54,6 @@ namespace HammerState
         public bool CheckCollision(Collision collision)
         {
             return false;
-        }
-
-        private bool IsPreciseDistance()
-        {
-            return Vector3.Distance(_gameObject.transform.position, _flyToPosition) <= DISTANCE_ACCURACY;
-        }
-
-        private bool IsPreciseRotation()
-        {
-            var degrees = _gameObject.transform.eulerAngles - _flyToRotation.eulerAngles;
-            return IsPreciseEulerAngle(degrees.x) && IsPreciseEulerAngle(degrees.y) &&
-                   IsPreciseEulerAngle(degrees.z);
-        }
-
-        private bool IsPreciseEulerAngle(float angle)
-        {
-            return Mathf.Abs(angle) <= ROTATION_ACCURACY || 360f - Mathf.Abs(angle) <= ROTATION_ACCURACY;
         }
 
         private Quaternion GetRotationToHand(GameObject hand, Vector3 position)

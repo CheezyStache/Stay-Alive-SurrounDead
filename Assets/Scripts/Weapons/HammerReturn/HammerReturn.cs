@@ -12,6 +12,7 @@ public class HammerReturn : MonoBehaviour
     [SerializeField] private float _flyHeight;
     [SerializeField] private float _flyTime;
     [SerializeField] private float _returnTime;
+    [SerializeField] private int _rotationTimes;
     [SerializeField] private float _isNearRadius;
 
     private bool _hasTouchedGround;
@@ -38,7 +39,7 @@ public class HammerReturn : MonoBehaviour
         if (_stateEnum == HammerState.Fly)
         {
             _stateEnum = HammerState.Return;
-            _state = new ReturnState(gameObject, _returnTime, _hand);
+            _state = new ReturnState(gameObject, _returnTime, _rotationTimes, _hand);
             return;
         }
 
