@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class EnemyScript : MonoBehaviour
+public class EnemyScript : GameEventListener
 {
     [SerializeField] private float _speed;
     [SerializeField] private float _dieDelay;
@@ -42,7 +42,7 @@ public class EnemyScript : MonoBehaviour
 
     void OnTriggerStay(Collider collider)
     {
-        if (_state == EnemyState.Die)
+        if (_state == EnemyState.Die || _state == EnemyState.Stop)
             return;
 
         if (collider.gameObject.tag != "Player")
@@ -66,7 +66,7 @@ public class EnemyScript : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (_state == EnemyState.Die)
+        if (_state == EnemyState.Die || _state == EnemyState.Stop)
             return;
 
         if (collision.gameObject.layer != LayerMask.NameToLayer("Hammer"))
@@ -80,6 +80,13 @@ public class EnemyScript : MonoBehaviour
     public void IncreaseSpeed(float amount)
     {
         _speed += amount;
+    }
+
+    public void Stop()
+    {
+        gameObject.GetComponent<Animator>().enabled = false;
+        _rigidbody.isKinematic = true;
+        _state = EnemyState.Stop;
     }
 
     private void Run()
@@ -108,6 +115,9 @@ public class EnemyScript : MonoBehaviour
 
         yield return new WaitForSeconds(_dieDelay);
 
+        if (_state == EnemyState.Stop)
+            yield break;
+
         var time = 0f;
         var fallTime = Vector3.Distance(transform.position, bottomPoint) / _dieFallSpeed;
 
@@ -130,6 +140,7 @@ public class EnemyScript : MonoBehaviour
     {
         Run,
         Attack,
-        Die
+        Die,
+        Stop
     }
 }

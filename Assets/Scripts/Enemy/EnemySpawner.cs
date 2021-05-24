@@ -21,17 +21,15 @@ public class EnemySpawner : GameEventListener
 
     private int enemySpawnCount;
 
-    void Start()
-    {
-        enemySpawnCount = 0;
-        StartNextWave();
-    }
-
     public void StartNextWave()
     {
+        enemySpawnCount = 0;
+
+        foreach (Transform child in _enemyParentTransform)
+            Destroy(child.gameObject);
+
         StartCoroutine(SpawnEnemy());
     }
-
 
     IEnumerator SpawnEnemy()
     {
@@ -42,6 +40,9 @@ public class EnemySpawner : GameEventListener
         while (enemySpawnCount < wavesCount[waveCount])
         {
             yield return new WaitForSeconds(_spawnDelay);
+
+            if(playerData.Health <= 0)
+                break;
 
             // Enemy initial position and rotation
             var position = _spawnPoints[Random.Range(0, _spawnPoints.Length)].position;
@@ -60,7 +61,6 @@ public class EnemySpawner : GameEventListener
             enemySpawnCount++;
         }
 
-        enemySpawnCount = 0;
         onEnemyWaveEndedEvent.Raise();
     }
 }

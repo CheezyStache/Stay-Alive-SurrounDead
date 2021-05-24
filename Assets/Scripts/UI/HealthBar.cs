@@ -17,6 +17,7 @@ public class HealthBar : GameEventListener
 
     public void UpdateHealth()
     {
-        textObj.text = playerData.Health.ToString();
+        var health = playerData.Health < 0 ? 0 : playerData.Health;
+        textObj.text = health.ToString();
     }
 }

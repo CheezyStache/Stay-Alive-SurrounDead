@@ -7,8 +7,9 @@ public class HitPanel : GameEventListener
 {
     [SerializeField] private Color _color;
     [SerializeField] private Color _hitColor;
-    [SerializeField] private float _flashSpeed;
     [SerializeField] private float _flashStay;
+
+    [SerializeField] private PlayerData playerData;
 
     private Image _image;
 
@@ -22,12 +23,18 @@ public class HitPanel : GameEventListener
         StartCoroutine(HitTimer());
     }
 
+    public void Restart()
+    {
+        _image.color = _color;
+    }
+
     private IEnumerator HitTimer()
     {
         _image.color = _hitColor;
 
         yield return new WaitForSeconds(_flashStay);
 
-        _image.color = _color;
+        if(playerData.Health > 0)
+            _image.color = _color;
     }
 }

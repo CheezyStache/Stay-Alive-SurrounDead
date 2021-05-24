@@ -12,4 +12,10 @@ public class OnPlayerWaveChangeEvent : GameEvent
         playerData.Wave++;
         Raise();
     }
+
+    public void ResetWaves()
+    {
+        playerData.Wave = 0;
+        Raise();
+    }
 }

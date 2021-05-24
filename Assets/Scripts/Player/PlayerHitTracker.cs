@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PlayerHitTracker : MonoBehaviour
+public class PlayerHitTracker : GameEventListener
 {
     [SerializeField] private float attackDelay;
 
     [SerializeField] private OnPlayerHitEvent onPlayerHit;
+    [SerializeField] private PlayerData playerData;
 
     private int enemyAttackCount;
     private List<int> enemyNames;
+    private bool immortal;
 
     void Start()
     {
@@ -32,15 +34,36 @@ public class PlayerHitTracker : MonoBehaviour
         enemyNames.Add(collider.gameObject.GetInstanceID());
     }
 
+    public void EnableImmortality()
+    {
+        StartCoroutine(ImmortalityTimer());
+    }
+
     IEnumerator Hit()
     {
         while (true)
         {
             yield return new WaitForSeconds(attackDelay);
 
+            if (playerData.Health <= 0 || immortal)
+            {
+                enemyAttackCount = 0;
+                enemyNames.Clear();
+                continue;
+            }
+
             onPlayerHit.Raise(enemyAttackCount);
             enemyAttackCount = 0;
             enemyNames.Clear();
         }
+    }
+
+    IEnumerator ImmortalityTimer()
+    {
+        immortal = true;
+
+        yield return new WaitForSeconds(attackDelay);
+
+        immortal = false;
     }
 }

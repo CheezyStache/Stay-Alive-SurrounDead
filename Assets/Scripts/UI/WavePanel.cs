@@ -10,11 +10,6 @@ public class WavePanel : GameEventListener
     [SerializeField] private Text waveLabel;
     [SerializeField] private float showTime;
 
-    void Start()
-    {
-        UpdateWave();
-    }
-
     public void UpdateWave()
     {
         waveText.text = (playerData.Wave + 1).ToString();

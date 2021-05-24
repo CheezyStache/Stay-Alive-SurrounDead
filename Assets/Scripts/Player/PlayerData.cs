@@ -10,6 +10,11 @@ public class PlayerData : ScriptableObject
     public int Health { get; set; }
     public int Wave { get; set; }
 
+    public void RestartHealth()
+    {
+        Health = maxHealth;
+    }
+
     void OnEnable()
     {
         Health = maxHealth;

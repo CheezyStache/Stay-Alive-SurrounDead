@@ -7,6 +7,7 @@ public class OnPlayerHitEvent : GameEvent
 {
     [SerializeField] private PlayerData playerData;
     [SerializeField] private OnPlayerHealthChangeEvent onPlayerHealthChange;
+    [SerializeField] private OnPlayerDiedEvent onPlayerDiedEvent;
 
     public void Raise(int damage)
     {
@@ -17,5 +18,8 @@ public class OnPlayerHitEvent : GameEvent
             onPlayerHealthChange.Raise(-damage);
             Raise();
         }
+
+        if(playerData.Health <= 0)
+            onPlayerDiedEvent.Raise();
     }
 }
