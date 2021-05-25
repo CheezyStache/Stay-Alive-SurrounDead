@@ -137,8 +137,8 @@ MonoBehaviour:
   activateActionSetOnAttach:
     actionSetPath: 
   hideHandOnAttach: 1
-  hideSkeletonOnAttach: 0
-  hideControllerOnAttach: 0
+  hideSkeletonOnAttach: 1
+  hideControllerOnAttach: 1
   handAnimationOnPickup: 0
   setRangeOfMotionOnPickup: -1
   useHandObjectAttachmentPoint: 1
