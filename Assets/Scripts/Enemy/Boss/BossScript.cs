@@ -13,6 +13,9 @@ public class BossScript : GameEventListener
     [SerializeField] private int damage;
     [SerializeField] private Vector3 goToPosition;
 
+    [SerializeField] private PlayerData playerData;
+    [SerializeField] private int increaseHealthEveryWave;
+
     [SerializeField] private OnPlayerWaveChangeEvent onPlayerWaveChangeEvent;
     [SerializeField] private OnPlayerHitEvent onPlayerHit;
     [SerializeField] private OnBossAttackEvent onBossAttackEvent;
@@ -39,6 +42,8 @@ public class BossScript : GameEventListener
         animator = GetComponent<Animator>();
 
         animator.SetBool(RunForwardAnimation, true);
+        health += Mathf.Floor((float)playerData.Wave / (float)increaseHealthEveryWave);
+        damage += Mathf.FloorToInt((float)playerData.Wave / (float)increaseHealthEveryWave);
     }
 
     void FixedUpdate()
@@ -157,7 +162,7 @@ public class BossScript : GameEventListener
             yield return null;
         }
 
-        onPlayerWaveChangeEvent.BossWaveFinished();
+        onPlayerWaveChangeEvent.NextWave();
         Destroy(gameObject);
     }
 

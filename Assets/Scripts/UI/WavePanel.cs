@@ -8,6 +8,7 @@ public class WavePanel : GameEventListener
     [SerializeField] private PlayerData playerData;
     [SerializeField] private Text waveText;
     [SerializeField] private Text waveLabel;
+    [SerializeField] private Text bossfightLabel;
     [SerializeField] private float showTime;
 
     public void UpdateWave()
@@ -25,5 +26,19 @@ public class WavePanel : GameEventListener
 
         waveText.enabled = false;
         waveLabel.enabled = false;
+    }
+
+    public void ShowBossfight()
+    {
+        StartCoroutine(ShowBossfightTimer());
+    }
+
+    private IEnumerator ShowBossfightTimer()
+    {
+        bossfightLabel.enabled = true;
+
+        yield return new WaitForSeconds(showTime);
+
+        bossfightLabel.enabled = false;
     }
 }

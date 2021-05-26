@@ -11,27 +11,20 @@ public class OnPlayerWaveChangeEvent : GameEvent
 
     public void NextWave()
     {
-        if ((playerData.Wave + 1) % bossWave == bossWave - 1)
+        playerData.Wave++;
+
+        if (playerData.Wave % bossWave == bossWave - 1)
         {
             onBossWaveStart.Raise();
             return;
         }
 
-        playerData.Wave++;
-        Raise();
-    }
-
-    public void BossWaveFinished()
-    {
-        playerData.Wave += 2;
         Raise();
     }
 
     public void ResetWaves()
     {
-        onBossWaveStart.Raise();
-
-        //playerData.Wave = 0;
-        //Raise();
+        playerData.Wave = 0;
+        Raise();
     }
 }

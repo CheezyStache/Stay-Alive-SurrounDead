@@ -9,17 +9,13 @@ public class BossSpawner : GameEventListener
     [SerializeField] private float spawnDelay;
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject portal;
+    [SerializeField] private Vector3 portalPosition;
+    [SerializeField] private Quaternion portalRotation;
 
     [SerializeField] private OnPlayerWaveChangeEvent onPlayerWaveChangeEvent;
-    private void Start()
-    {
-        onPlayerWaveChangeEvent.ResetWaves();
-    }
 
     public void ClearBoss()
     {
-        portal.SetActive(false);
-
         foreach (Transform child in spawnPoint)
             Destroy(child.gameObject);
     }
@@ -33,7 +29,8 @@ public class BossSpawner : GameEventListener
     {
         yield return new WaitForSeconds(spawnDelay);
 
-        portal.SetActive(true);
+        var portalInstance = Instantiate(portal, portalPosition, portalRotation, gameObject.transform);
+        portalInstance.transform.localPosition = portalPosition;
 
         var viewDirection = (player.transform.position - transform.position).normalized;
         var rotation = Quaternion.LookRotation(viewDirection);

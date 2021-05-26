@@ -397,6 +397,8 @@ MonoBehaviour:
   health: 3
   damage: 2
   goToPosition: {x: 0, y: 0, z: 3}
+  playerData: {fileID: 11400000, guid: e67f571fe0d2bc14fad884fbaa8aa8f4, type: 2}
+  increaseHealthEveryWave: 3
   onPlayerWaveChangeEvent: {fileID: 11400000, guid: 6404bb87954e45442a4517ac276edd96,
     type: 2}
   onPlayerHit: {fileID: 11400000, guid: 1f647ed908829114db6c1cb392573188, type: 2}
