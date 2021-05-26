@@ -6,6 +6,8 @@ TagManager:
   tags:
   - projectile
   - FxTemporaire
+  - AttackDirection
+  - ShieldGhost
   layers:
   - Default
   - TransparentFX
@@ -20,8 +22,8 @@ TagManager:
   - Hand
   - Head
   - Player
-  - 
-  - 
+  - Shield
+  - Boss
   - 
   - 
   - 

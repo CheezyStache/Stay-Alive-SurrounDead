@@ -38,12 +38,6 @@ public class BossSpawner : GameEventListener
         var viewDirection = (player.transform.position - transform.position).normalized;
         var rotation = Quaternion.LookRotation(viewDirection);
 
-        var newBoss = Instantiate(boss, spawnPoint.position, rotation, spawnPoint);
-
-        var bossScript = newBoss.GetComponent<BossScript>();
-        if (bossScript == null)
-            throw new UnityException("Boss doesn't have an BossScript");
-
-        bossScript.Player = player;
+        Instantiate(boss, spawnPoint.position, rotation, spawnPoint);
     }
 }

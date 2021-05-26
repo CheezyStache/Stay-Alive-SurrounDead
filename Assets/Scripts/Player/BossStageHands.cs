@@ -25,8 +25,12 @@ public class BossStageHands : GameEventListener
         shieldInstance = Instantiate(shield, Vector3.zero, Quaternion.identity);
         hammerInstance = Instantiate(hammer, Vector3.zero, Quaternion.identity);
 
-        leftHand.GetComponent<Hand>().AttachObject(shieldInstance, GrabTypes.Grip);
-        rightHand.GetComponent<Hand>().AttachObject(hammerInstance, GrabTypes.Grip);
+        var attachment = Hand.AttachmentFlags.ParentToHand;
+
+        leftHand.GetComponent<Hand>().AttachObject(shieldInstance, GrabTypes.Grip, attachment,
+            shieldInstance.transform.Find("Grip").transform);
+        rightHand.GetComponent<Hand>().AttachObject(hammerInstance, GrabTypes.Grip, attachment,
+            hammerInstance.transform.GetChild(0).transform);
     }
 
     public void ReleaseHands()

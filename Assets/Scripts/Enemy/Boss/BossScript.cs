@@ -4,27 +4,27 @@ using UnityEngine;
 
 public class BossScript : GameEventListener
 {
-    [HideInInspector] public GameObject Player { get; set; }
-
     [SerializeField] private float speed;
     [SerializeField] private float dieDelay;
     [SerializeField] private float dieFallSpeed;
     [SerializeField] private float dieFallY;
-    [SerializeField] private float stopDistance;
     [SerializeField] private float actionTime;
     [SerializeField] private float health;
+    [SerializeField] private int damage;
+    [SerializeField] private Vector3 goToPosition;
 
     [SerializeField] private OnPlayerWaveChangeEvent onPlayerWaveChangeEvent;
     [SerializeField] private OnPlayerHitEvent onPlayerHit;
     [SerializeField] private OnBossAttackEvent onBossAttackEvent;
     [SerializeField] private OnBossDefendEvent onBossDefendEvent;
+    [SerializeField] private OnPlayerFailedActionEvent onPlayerFailedAction;
 
     private Rigidbody _rigidbody;
     private Animator animator;
 
-    private bool actionDone;
-
     private BossState state;
+    private IEnumerator waitCoroutine;
+    private bool isAttack;
 
     private const string RunForwardAnimation = "Run Forward";
     private const string AttackAnimation = "Attack 01";
@@ -56,61 +56,64 @@ public class BossScript : GameEventListener
 
     public void PlayerActionIsDone()
     {
-        actionDone = true;
+        StopCoroutine(waitCoroutine);
+
+        if (isAttack)
+        {
+            health--;
+
+            if (health <= 0)
+                Die();
+            else
+                ChangeAnimation(HitAnimation);
+        }
+
+        StartCoroutine(WaitAction());
     }
 
     private void Run()
     {
-        if (Player == null)
-            return;
-
         var step = Time.deltaTime * speed;
-        _rigidbody.MovePosition(Vector3.MoveTowards(transform.position, Player.transform.position, step));
+        _rigidbody.MovePosition(Vector3.MoveTowards(transform.position, goToPosition, step));
 
-        if (Vector3.Distance(transform.position, Player.transform.position) <= stopDistance)
+        if (Vector3.Distance(transform.position, goToPosition) <= 0.5f)
         {
             animator.SetBool(RunForwardAnimation, false);
             state = BossState.InBattle;
-            Attack();
+            StartCoroutine(WaitAction());
         }
-    }
-
-    private void Attack()
-    {
-        StartCoroutine(WaitAction());
     }
 
     IEnumerator WaitAction()
     {
-        while (state == BossState.InBattle)
+        if(state != BossState.InBattle)
+            yield break;
+
+        var randomAction = Random.Range(0, 10);
+        isAttack = randomAction % 2 == 0;
+
+        if (isAttack)
+            onBossAttackEvent.Raise();
+        else
+            onBossDefendEvent.Raise();
+
+        waitCoroutine = ActionDone();
+        StartCoroutine(waitCoroutine);
+    }
+
+    IEnumerator ActionDone()
+    {
+        yield return new WaitForSeconds(actionTime);
+
+        onPlayerFailedAction.Raise();
+
+        if (!isAttack)
         {
-            var randomAction = Random.Range(0, 10);
-            var isAttack = randomAction % 2 == 0;
-
-            if(isAttack)
-                onBossAttackEvent.Raise();
-            else
-                onBossDefendEvent.Raise();
-
-            yield return new WaitForSeconds(actionTime);
-
-            if (actionDone && isAttack)
-            {
-                health--;
-
-                if (health <= 0)
-                    Die();
-                else
-                    ChangeAnimation(HitAnimation);
-            }
-            else if (!actionDone && !isAttack)
-            {
-                onPlayerHit.Raise();
-                ChangeAnimation(AttackAnimation);
-            }
-
-            actionDone = false;
+            onPlayerHit.Raise(damage);
+            ChangeAnimation(AttackAnimation);
         }
+
+        StartCoroutine(WaitAction());
     }
 
     private void ChangeAnimation(string nextAnimation)
